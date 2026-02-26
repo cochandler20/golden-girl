@@ -1,81 +1,135 @@
 # ============================================================
-# .htaccess — Apache Security Configuration for Golden Girl
-# This file controls server-level access rules and HTTP security
-# headers. Requires mod_rewrite and mod_headers to be enabled
-# in XAMPP's httpd.conf (they usually are by default).
+# .htaccess — Apache Configuration for Golden Girl (XAMPP)
+#
+# REQUIREMENTS (in C:\xampp\apache\conf\httpd.conf):
+#   1. LoadModule rewrite_module modules/mod_rewrite.so  — uncommented
+#   2. LoadModule headers_module  modules/mod_headers.so — uncommented
+#   3. AllowOverride All  — set on the htdocs <Directory> block
+#
+# After any change here or in httpd.conf, restart Apache via
+# the XAMPP Control Panel for changes to take effect.
 # ============================================================
 
-# ── Disable directory browsing and CGI ───────────────────────
-Options -Indexes          # Prevent directory browsing (never show file listings)
-Options -ExecCGI          # Disable CGI execution in this directory
 
-# ── Block direct access to sensitive files ────────────────────
-# Deny direct browser requests to config files
+# ── Directory Listing ─────────────────────────────────────────
+# Prevent Apache from showing a file/folder listing when no
+# index file exists. Without this, visitors could browse your
+# entire project structure in the browser.
+Options -Indexes
+
+
+# ── Default Index File ────────────────────────────────────────
+# Tell Apache which file to serve when a directory is requested.
+# Visiting /golden-girl/ will automatically serve index.php.
+DirectoryIndex index.php
+
+
+# ── Block Direct Access to Sensitive Files ────────────────────
+# Deny direct browser access to database.php and auth.php.
+# These files contain credentials and session logic — they
+# should only ever be included by other PHP files, never
+# requested directly via a URL.
+#
+# Note: <FilesMatch> matches by filename only, not full path.
+# The regex anchors (^ and $) ensure we match the exact names.
 <FilesMatch "^(database|auth)\.php$">
     Require all denied
 </FilesMatch>
 
-# ── Rewrite Engine ────────────────────────────────────────────
+
+# ── URL Rewriting (Clean URLs) ────────────────────────────────
+# Requires mod_rewrite to be loaded in httpd.conf.
+# This block lets visitors use /login instead of /login.php,
+# /blog instead of /blog.php, etc.
 <IfModule mod_rewrite.c>
+
+    # Turn on the rewrite engine for this directory
     RewriteEngine On
 
-    # ── Block direct web access to sensitive folders ──────────
-    # Users can never directly browse /config/ or /includes/
+    # Set the base path so rewrites work correctly inside a
+    # subdirectory. This must match the folder name under htdocs.
+    # If you later deploy to the server root, change this to /
+    RewriteBase /golden-girl/
+
+    # -- Block direct access to sensitive directories ----------
+    # If the URL starts with "config/" or "includes/", return
+    # a 403 Forbidden response immediately.
+    # Flags: [F] = Forbidden (403), [L] = stop processing rules
     RewriteRule ^config/   - [F,L]
     RewriteRule ^includes/ - [F,L]
 
-    # ── Clean URLs (remove .php extension) ───────────────────
-    # How it works:
-    #   1. If the request already maps to a real file (CSS, JS,
-    #      an image), serve it directly — no rewriting needed.
-    #   2. If the request maps to a real directory, serve it directly.
-    #   3. Otherwise, append .php and serve that file.
-    #
-    # Result: visiting /login serves login.php transparently.
-    #         visiting /blog-post?slug=foo serves blog-post.php?slug=foo.
-    #
-    # The NC flag = case-insensitive match.
-    # The L  flag = stop processing rules after this one matches.
+    # -- Redirect /index and /index.php to the root URL --------
+    # Visiting /golden-girl/index or /golden-girl/index.php
+    # will permanently redirect to /golden-girl/ so there is
+    # only one canonical URL for the homepage.
+    # [R=301] = permanent redirect (browsers and search engines
+    #           will update their records to the new URL)
+    # [L]     = stop processing any further rules after this one
+    RewriteRule ^index(\.php)?$ /golden-girl/ [R=301,L]
 
-    # Skip rewriting if the request is a real file (e.g. /css/style.css)
+    # -- Skip rewriting for real files (CSS, JS, images, etc.) -
+    # If the requested path points to an actual file on disk,
+    # serve it directly without any rewriting.
     RewriteCond %{REQUEST_FILENAME} !-f
-    # Skip rewriting if the request is a real directory
+
+    # -- Skip rewriting for real directories ------------------
+    # If the requested path is an actual folder, serve it directly.
     RewriteCond %{REQUEST_FILENAME} !-d
-    # Match any path that doesn't already contain a dot (no extension)
-    # and rewrite it to the same path with .php appended
+
+    # -- Rewrite extensionless URLs to .php -------------------
+    # If neither condition above matched (no real file/folder),
+    # append .php to the request and serve that file instead.
+    #
+    # Example: /login  → login.php
+    #          /blog   → blog.php
+    #          /about  → about.php
+    #
+    # [^.]+ matches one or more characters that are NOT a dot,
+    # so URLs that already have an extension are left alone.
+    # Flags: [NC] = case-insensitive, [L] = stop here
     RewriteRule ^([^.]+)$ $1.php [NC,L]
 
 </IfModule>
 
-# ── Security Headers ──────────────────────────────────────────
+
+# ── HTTP Security Headers ─────────────────────────────────────
+# Requires mod_headers to be loaded in httpd.conf.
+# These headers tell browsers how to handle your site's content
+# and protect against several common attack categories.
 <IfModule mod_headers.c>
-    # Prevent browsers from MIME-sniffing the content type
+
+    # Prevent browsers from guessing (sniffing) the content type.
+    # Without this, a browser might execute a text file as JavaScript.
     Header set X-Content-Type-Options "nosniff"
 
-    # Prevent the site from being embedded in iframes (clickjacking defense)
+    # Allow the page to be embedded in iframes only from the same
+    # origin. Blocks clickjacking attacks from external sites.
     Header set X-Frame-Options "SAMEORIGIN"
 
-    # Enable browser's built-in XSS filter (older browsers)
-    Header set X-XSS-Protection "1; mode=block"
-
-    # Control what information is sent in the Referrer header
+    # Tell browsers not to send the full URL in the Referer header
+    # when navigating from HTTPS to HTTP, protecting user privacy.
     Header set Referrer-Policy "strict-origin-when-cross-origin"
 
-    # Permissions Policy: disable features we don't use
+    # Disable browser features this site does not use.
+    # Prevents malicious scripts from accessing camera, mic, or GPS.
     Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
-</IfModule>
 
-# ── Hide PHP version from HTTP headers ───────────────────────
-<IfModule mod_headers.c>
+    # Remove the X-Powered-By header that Apache/PHP adds by default.
+    # This hides the PHP version number from potential attackers.
     Header unset X-Powered-By
+
 </IfModule>
 
-# ── Custom error pages (optional — create these files later) ──
-# ErrorDocument 403 /golden-girl/errors/403.php
-# ErrorDocument 404 /golden-girl/errors/404.php
-# ErrorDocument 500 /golden-girl/errors/500.php
 
-# ── Protect the .htaccess file itself ─────────────────────────
+# ── Protect This File ─────────────────────────────────────────
+# Deny any direct browser request for the .htaccess file itself.
+# Visitors should never be able to read your server configuration.
 <Files ".htaccess">
     Require all denied
 </Files>
+
+
+# ── Custom Error Pages (uncomment when files are created) ──────
+# ErrorDocument 403 /golden-girl/errors/403.php
+# ErrorDocument 404 /golden-girl/errors/404.php
+# ErrorDocument 500 /golden-girl/errors/500.php

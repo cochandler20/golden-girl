@@ -13,6 +13,10 @@ startSecureSession(); // Initialize secure session on every page
 
 // Default page title if none is provided by the calling page
 $pageTitle = $pageTitle ?? 'Golden Girl';
+
+// Determine the current page filename (e.g. "blog.php") so we
+// can highlight the active nav link with the "active" CSS class.
+$currentPage = basename($_SERVER['PHP_SELF']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,8 +58,8 @@ $pageTitle = $pageTitle ?? 'Golden Girl';
 <header class="site-header">
     <div class="container nav-container">
 
-        <!-- Site logo / wordmark -->
-        <a href="<?= BASE_URL ?>/index" class="logo" aria-label="Golden Girl Home">
+        <!-- Site logo — links to the homepage root (no /index in the URL) -->
+        <a href="<?= BASE_URL ?>/" class="logo" aria-label="Golden Girl Home">
             <span class="logo-icon">✦</span>
             <span class="logo-text">Golden Girl</span>
         </a>
@@ -68,10 +72,35 @@ $pageTitle = $pageTitle ?? 'Golden Girl';
         <!-- Main navigation links -->
         <nav class="main-nav" id="main-nav" role="navigation" aria-label="Main menu">
             <ul>
-                <li><a href="<?= BASE_URL ?>/index"    <?= basename($_SERVER['PHP_SELF']) === 'index.php'    ? 'class="active"' : '' ?>>Home</a></li>
-                <li><a href="<?= BASE_URL ?>/blog"     <?= basename($_SERVER['PHP_SELF']) === 'blog.php'     ? 'class="active"' : '' ?>>Blog</a></li>
-                <li><a href="<?= BASE_URL ?>/schedule" <?= basename($_SERVER['PHP_SELF']) === 'schedule.php' ? 'class="active"' : '' ?>>Schedule</a></li>
-                <li><a href="<?= BASE_URL ?>/about"    <?= basename($_SERVER['PHP_SELF']) === 'about.php'    ? 'class="active"' : '' ?>>About</a></li>
+                <!-- Home link points to the root directory, not /index.
+                     Active class is applied when the current file is index.php -->
+                <li>
+                    <a href="<?= BASE_URL ?>/"
+                       <?= $currentPage === 'index.php' ? 'class="active"' : '' ?>>
+                        Home
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= BASE_URL ?>/blog"
+                       <?= $currentPage === 'blog.php' ? 'class="active"' : '' ?>>
+                        Blog
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= BASE_URL ?>/schedule"
+                       <?= $currentPage === 'schedule.php' ? 'class="active"' : '' ?>>
+                        Schedule
+                    </a>
+                </li>
+
+                <li>
+                    <a href="<?= BASE_URL ?>/about"
+                       <?= $currentPage === 'about.php' ? 'class="active"' : '' ?>>
+                        About
+                    </a>
+                </li>
 
                 <?php if (isLoggedIn()): ?>
                     <!-- Show account links only when logged in -->

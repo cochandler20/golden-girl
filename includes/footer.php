@@ -4,9 +4,9 @@
 <footer class="site-footer">
     <div class="container footer-grid">
 
-        <!-- Brand column -->
+        <!-- Brand column — logo links to root, not /index -->
         <div class="footer-brand">
-            <a href="<?= BASE_URL ?>/index" class="logo">
+            <a href="<?= BASE_URL ?>/" class="logo">
                 <span class="logo-icon">✦</span>
                 <span class="logo-text">Golden Girl</span>
             </a>
@@ -17,7 +17,8 @@
         <div class="footer-links">
             <h4>Explore</h4>
             <ul>
-                <li><a href="<?= BASE_URL ?>/index">Home</a></li>
+                <!-- Home points to the root URL, not /index -->
+                <li><a href="<?= BASE_URL ?>/">Home</a></li>
                 <li><a href="<?= BASE_URL ?>/blog">Blog</a></li>
                 <li><a href="<?= BASE_URL ?>/schedule">Schedule a Call</a></li>
                 <li><a href="<?= BASE_URL ?>/about">About Me</a></li>
