@@ -1,0 +1,58 @@
+# ============================================================
+# .htaccess — Apache Security Configuration for Golden Girl
+# This file controls server-level access rules and HTTP security
+# headers. Requires mod_rewrite and mod_headers to be enabled
+# in XAMPP's httpd.conf (they usually are by default).
+# ============================================================
+
+# ── Enable the Apache Rewrite Engine ─────────────────────────
+Options -Indexes          # Prevent directory browsing (never show file listings)
+Options -ExecCGI          # Disable CGI execution in this directory
+
+# ── Block direct access to sensitive directories ──────────────
+# Users should never be able to directly request config files
+<FilesMatch "^(database|auth)\.php$">
+    # Deny access to config files when requested directly
+    Require all denied
+</FilesMatch>
+
+# Block access to the config directory entirely from the web
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Block direct web access to /config/ folder
+    RewriteRule ^config/ - [F,L]
+</IfModule>
+
+# ── Security Headers ──────────────────────────────────────────
+<IfModule mod_headers.c>
+    # Prevent browsers from MIME-sniffing the content type
+    Header set X-Content-Type-Options "nosniff"
+
+    # Prevent the site from being embedded in iframes (clickjacking defense)
+    Header set X-Frame-Options "SAMEORIGIN"
+
+    # Enable browser's built-in XSS filter (older browsers)
+    Header set X-XSS-Protection "1; mode=block"
+
+    # Control what information is sent in the Referrer header
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Permissions Policy: disable features we don't use
+    Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
+
+# ── Hide PHP version from HTTP headers ───────────────────────
+<IfModule mod_headers.c>
+    Header unset X-Powered-By
+</IfModule>
+
+# ── Custom error pages (optional — create these files later) ──
+# ErrorDocument 403 /errors/403.php
+# ErrorDocument 404 /errors/404.php
+# ErrorDocument 500 /errors/500.php
+
+# ── Protect the .htaccess file itself ─────────────────────────
+<Files ".htaccess">
+    Require all denied
+</Files>
