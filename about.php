@@ -26,10 +26,7 @@ require_once __DIR__ . '/includes/header.php';
             <div>
                 <!-- Photo placeholder — replace src with actual image -->
                 <div class="about-photo" aria-label="Photo of the site owner">
-                    👩
-                    <!-- To use a real photo, replace the emoji with:
-                         <img src="<?= BASE_URL ?>/images/owner-photo.jpg" alt="[Owner name]">
-                         and remove the font-size style from .about-photo -->
+                    <img src="<?= BASE_URL ?>/img/portrait.jpg" alt="Rebecca Gould">
                 </div>
 
                 <!-- Credential bullets — update these with real info -->
@@ -46,7 +43,7 @@ require_once __DIR__ . '/includes/header.php';
             <div>
                 <!-- Name and tagline — update with real info -->
                 <span class="section-label">Hi, I'm</span>
-                <h2>[Your Name Here]</h2>
+                <h2>Rebecca Gould</h2>
 
                 <!-- Bio paragraphs — owner to fill in -->
                 <p style="font-size:1.05rem; color:var(--text-mid); margin-bottom:1.5rem;">

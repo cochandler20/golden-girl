@@ -5,6 +5,23 @@
 // functions used across the entire application.
 // ============================================================
 
+// ── Base URL ──────────────────────────────────────────────────
+// Defined here (not database.php) because auth.php is included
+// on EVERY page, including pages that don't use the database
+// (e.g. index.php, about.php). This guarantees BASE_URL is
+// always available before header.php tries to use it.
+// Change to '' (empty string) when deployed to a web server root.
+if (!defined('BASE_URL')) {
+    define('BASE_URL', '/golden-girl');
+}
+
+// --- Development error display ---
+// Shows PHP errors on screen so blank white pages reveal their cause.
+// IMPORTANT: Set both to 0 before going live on a real server.
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // --- Secure session configuration ---
 // These must be set BEFORE session_start() is called
 
@@ -93,7 +110,7 @@ function isAdmin(): bool {
 function requireLogin(): void {
     if (!isLoggedIn()) {
         // BASE_URL prefixes the path so it works inside a subfolder on XAMPP
-        header('Location: ' . BASE_URL . '/login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
+        header('Location: ' . BASE_URL . '/login?redirect=' . urlencode($_SERVER['REQUEST_URI']));
         exit; // Always exit after a redirect to stop further script execution
     }
 }
@@ -105,7 +122,7 @@ function requireLogin(): void {
 function requireAdmin(): void {
     if (!isAdmin()) {
         http_response_code(403); // 403 Forbidden
-        header('Location: ' . BASE_URL . '/index.php?error=unauthorized');
+        header('Location: ' . BASE_URL . '/index?error=unauthorized');
         exit;
     }
 }

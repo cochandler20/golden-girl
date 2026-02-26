@@ -55,7 +55,7 @@ $pageTitle = $pageTitle ?? 'Golden Girl';
     <div class="container nav-container">
 
         <!-- Site logo / wordmark -->
-        <a href="<?= BASE_URL ?>/index.php" class="logo" aria-label="Golden Girl Home">
+        <a href="<?= BASE_URL ?>/index" class="logo" aria-label="Golden Girl Home">
             <span class="logo-icon">✦</span>
             <span class="logo-text">Golden Girl</span>
         </a>
@@ -68,23 +68,23 @@ $pageTitle = $pageTitle ?? 'Golden Girl';
         <!-- Main navigation links -->
         <nav class="main-nav" id="main-nav" role="navigation" aria-label="Main menu">
             <ul>
-                <li><a href="<?= BASE_URL ?>/index.php"    <?= basename($_SERVER['PHP_SELF']) === 'index.php'    ? 'class="active"' : '' ?>>Home</a></li>
-                <li><a href="<?= BASE_URL ?>/blog.php"     <?= basename($_SERVER['PHP_SELF']) === 'blog.php'     ? 'class="active"' : '' ?>>Blog</a></li>
-                <li><a href="<?= BASE_URL ?>/schedule.php" <?= basename($_SERVER['PHP_SELF']) === 'schedule.php' ? 'class="active"' : '' ?>>Schedule</a></li>
-                <li><a href="<?= BASE_URL ?>/about.php"    <?= basename($_SERVER['PHP_SELF']) === 'about.php'    ? 'class="active"' : '' ?>>About</a></li>
+                <li><a href="<?= BASE_URL ?>/index"    <?= basename($_SERVER['PHP_SELF']) === 'index.php'    ? 'class="active"' : '' ?>>Home</a></li>
+                <li><a href="<?= BASE_URL ?>/blog"     <?= basename($_SERVER['PHP_SELF']) === 'blog.php'     ? 'class="active"' : '' ?>>Blog</a></li>
+                <li><a href="<?= BASE_URL ?>/schedule" <?= basename($_SERVER['PHP_SELF']) === 'schedule.php' ? 'class="active"' : '' ?>>Schedule</a></li>
+                <li><a href="<?= BASE_URL ?>/about"    <?= basename($_SERVER['PHP_SELF']) === 'about.php'    ? 'class="active"' : '' ?>>About</a></li>
 
                 <?php if (isLoggedIn()): ?>
                     <!-- Show account links only when logged in -->
                     <?php if (isAdmin()): ?>
                         <!-- Extra admin link for blog management -->
-                        <li><a href="<?= BASE_URL ?>/blog-create.php">New Post</a></li>
+                        <li><a href="<?= BASE_URL ?>/blog-create">New Post</a></li>
                     <?php endif; ?>
-                    <li><a href="<?= BASE_URL ?>/account.php">My Account</a></li>
-                    <li><a href="<?= BASE_URL ?>/logout.php" class="btn btn-outline-nav">Sign Out</a></li>
+                    <li><a href="<?= BASE_URL ?>/account">My Account</a></li>
+                    <li><a href="<?= BASE_URL ?>/logout" class="btn btn-outline-nav">Sign Out</a></li>
                 <?php else: ?>
                     <!-- Guest links -->
-                    <li><a href="<?= BASE_URL ?>/login.php">Sign In</a></li>
-                    <li><a href="<?= BASE_URL ?>/register.php" class="btn btn-nav">Get Started</a></li>
+                    <li><a href="<?= BASE_URL ?>/login">Sign In</a></li>
+                    <li><a href="<?= BASE_URL ?>/register" class="btn btn-nav">Get Started</a></li>
                 <?php endif; ?>
             </ul>
         </nav>

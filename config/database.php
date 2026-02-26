@@ -6,12 +6,6 @@
 // support, which prevents SQL injection attacks.
 // ============================================================
 
-// ── Base URL ──────────────────────────────────────────────────
-// The subfolder path your site lives in on the server.
-// On XAMPP this is the folder name inside htdocs.
-// Change to '' (empty string) when deployed to a web server root.
-define('BASE_URL', '/golden-girl');
-
 // --- Database credentials ---
 // Update these to match your XAMPP MySQL settings
 define('DB_HOST', 'localhost');

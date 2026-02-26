@@ -5,23 +5,46 @@
 # in XAMPP's httpd.conf (they usually are by default).
 # ============================================================
 
-# ── Enable the Apache Rewrite Engine ─────────────────────────
+# ── Disable directory browsing and CGI ───────────────────────
 Options -Indexes          # Prevent directory browsing (never show file listings)
 Options -ExecCGI          # Disable CGI execution in this directory
 
-# ── Block direct access to sensitive directories ──────────────
-# Users should never be able to directly request config files
+# ── Block direct access to sensitive files ────────────────────
+# Deny direct browser requests to config files
 <FilesMatch "^(database|auth)\.php$">
-    # Deny access to config files when requested directly
     Require all denied
 </FilesMatch>
 
-# Block access to the config directory entirely from the web
+# ── Rewrite Engine ────────────────────────────────────────────
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Block direct web access to /config/ folder
-    RewriteRule ^config/ - [F,L]
+    # ── Block direct web access to sensitive folders ──────────
+    # Users can never directly browse /config/ or /includes/
+    RewriteRule ^config/   - [F,L]
+    RewriteRule ^includes/ - [F,L]
+
+    # ── Clean URLs (remove .php extension) ───────────────────
+    # How it works:
+    #   1. If the request already maps to a real file (CSS, JS,
+    #      an image), serve it directly — no rewriting needed.
+    #   2. If the request maps to a real directory, serve it directly.
+    #   3. Otherwise, append .php and serve that file.
+    #
+    # Result: visiting /login serves login.php transparently.
+    #         visiting /blog-post?slug=foo serves blog-post.php?slug=foo.
+    #
+    # The NC flag = case-insensitive match.
+    # The L  flag = stop processing rules after this one matches.
+
+    # Skip rewriting if the request is a real file (e.g. /css/style.css)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    # Skip rewriting if the request is a real directory
+    RewriteCond %{REQUEST_FILENAME} !-d
+    # Match any path that doesn't already contain a dot (no extension)
+    # and rewrite it to the same path with .php appended
+    RewriteRule ^([^.]+)$ $1.php [NC,L]
+
 </IfModule>
 
 # ── Security Headers ──────────────────────────────────────────
@@ -48,9 +71,9 @@ Options -ExecCGI          # Disable CGI execution in this directory
 </IfModule>
 
 # ── Custom error pages (optional — create these files later) ──
-# ErrorDocument 403 /errors/403.php
-# ErrorDocument 404 /errors/404.php
-# ErrorDocument 500 /errors/500.php
+# ErrorDocument 403 /golden-girl/errors/403.php
+# ErrorDocument 404 /golden-girl/errors/404.php
+# ErrorDocument 500 /golden-girl/errors/500.php
 
 # ── Protect the .htaccess file itself ─────────────────────────
 <Files ".htaccess">

@@ -6,7 +6,7 @@
 
         <!-- Brand column -->
         <div class="footer-brand">
-            <a href="<?= BASE_URL ?>/index.php" class="logo">
+            <a href="<?= BASE_URL ?>/index" class="logo">
                 <span class="logo-icon">✦</span>
                 <span class="logo-text">Golden Girl</span>
             </a>
@@ -17,10 +17,10 @@
         <div class="footer-links">
             <h4>Explore</h4>
             <ul>
-                <li><a href="<?= BASE_URL ?>/index.php">Home</a></li>
-                <li><a href="<?= BASE_URL ?>/blog.php">Blog</a></li>
-                <li><a href="<?= BASE_URL ?>/schedule.php">Schedule a Call</a></li>
-                <li><a href="<?= BASE_URL ?>/about.php">About Me</a></li>
+                <li><a href="<?= BASE_URL ?>/index">Home</a></li>
+                <li><a href="<?= BASE_URL ?>/blog">Blog</a></li>
+                <li><a href="<?= BASE_URL ?>/schedule">Schedule a Call</a></li>
+                <li><a href="<?= BASE_URL ?>/about">About Me</a></li>
             </ul>
         </div>
 
@@ -28,16 +28,16 @@
         <div class="footer-links">
             <h4>Services</h4>
             <ul>
-                <li><a href="<?= BASE_URL ?>/schedule.php?service=real-estate">Real Estate</a></li>
-                <li><a href="<?= BASE_URL ?>/schedule.php?service=life-insurance">Life Insurance</a></li>
-                <li><a href="<?= BASE_URL ?>/schedule.php?service=consultation">Free Consultation</a></li>
+                <li><a href="<?= BASE_URL ?>/schedule?service=real-estate">Real Estate</a></li>
+                <li><a href="<?= BASE_URL ?>/schedule?service=life-insurance">Life Insurance</a></li>
+                <li><a href="<?= BASE_URL ?>/schedule?service=consultation">Free Consultation</a></li>
             </ul>
         </div>
 
         <!-- Contact / CTA column -->
         <div class="footer-cta">
             <h4>Ready to take the next step?</h4>
-            <a href="<?= BASE_URL ?>/schedule.php" class="btn btn-warm">Book a Free Call</a>
+            <a href="<?= BASE_URL ?>/schedule" class="btn btn-warm">Book a Free Call</a>
             <p class="footer-privacy">
                 <a href="#">Privacy Policy</a> &middot; <a href="#">Terms of Use</a>
             </p>
