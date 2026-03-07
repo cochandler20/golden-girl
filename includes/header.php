@@ -43,6 +43,13 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <!-- SEO description -->
     <meta name="description" content="Golden Girl — Real estate services and insurance policies tailored for women starting a new chapter.">
 
+    <link rel="icon" type="image/png" href="/img/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/img/favicon.svg" />
+    <link rel="shortcut icon" href="/img/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Goulden Girl" />
+    <link rel="manifest" href="/img/site.webmanifest" />
+
     <title><?= sanitize($pageTitle) ?> | Golden Girl</title>
 
     <!-- Google Fonts: warm and professional pairing -->
